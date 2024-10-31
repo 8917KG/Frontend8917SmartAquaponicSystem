@@ -6,7 +6,7 @@ export function Navigation(props) {
     const [navItems, setNavItems] = useState([])
 
     useEffect(() => {
-        if (navItems.length == 0) {
+        if (navItems.length === 0) {
             setNavItems(props.items)
         }
     }, [props.items])

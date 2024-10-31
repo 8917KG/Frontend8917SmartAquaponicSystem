@@ -1,5 +1,5 @@
 import './App.css';
-
+import { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { Routes, Route } from 'react-router-dom';
@@ -9,14 +9,14 @@ import { Home } from './pages/Home';
 import { Contact } from './pages/Contact';
 import { About } from './pages/About';
 import { Signup } from './pages/Signup'
-import { Signin } from './pages/Signin';
+import { Signout } from './pages/Signout';
 
 //import firebase 
 import { initializeApp } from 'firebase/app';
 import { FirebaseConfig } from './config/FirebaseConfig';
 
 //import firebase auth 
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"
+import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth"
 
 //initialize app
 const FBapp = initializeApp(FirebaseConfig)
@@ -27,18 +27,19 @@ const FBauth = getAuth(FBapp)
 //function to create user account
 const signup = (email, password) => {
     return new Promise((resolve, reject) => {
-        createUserWithEmailAndPassword(FBauth, email,password)
-        .then ((userCredential) => resolve(userCredential))
+        createUserWithEmailAndPassword(FBauth, email, password)
+            .then((userCredential) => resolve(userCredential))
+            .catch((error) => reject(error))
+    })
+}
+
+const signoutUser = () => {
+    return new Promise((resolve, reject)=> {
+        signOut(FBauth)
+        .then(() => resolve(true))
         .catch((error) => reject(error))
     })
-
-    // createUserWithEmailAndPassword(FBauth, email, password)
-    //     .then((userCredential) => {
-    //         console.log(userCredential.user)
-    //     })
-    //     .catch((error) => {
-    //         console.log(error)
-    //     })
+    
 }
 
 const NavData = [
@@ -46,10 +47,25 @@ const NavData = [
     { name: "About", path: "/about", public: true },
     { name: "Contact", path: "/contact", public: true },
     { name: "Sign Up", path: "/signup", public: true },
-    { name: "Sign in", path: "/signin", public: true }
+    { name: "Sign in", path: "/signin", public: true },
+    { name: "Sign out", path: "/signout", public: true }
 ]
 
 function App() {
+
+    const [auth, setAuth] = useState()
+
+    //an observer to determine user's authentication status 
+    onAuthStateChanged(FBauth, (user) => {
+        if (user) {
+            setAuth(user)
+        }
+        else {
+            setAuth(null)
+        }
+    })
+
+
     return (
         <div className="App">
             <Header title="SAWS" headernav={NavData} />
@@ -58,7 +74,8 @@ function App() {
                 <Route path='/about' element={<About />} />
                 <Route path='/contact' element={<Contact />} />
                 <Route path='/signup' element={<Signup handler={signup} />} />
-                
+                <Route path='/signout' element={<Signout handler={signoutUser} auth={auth}/>} />
+
             </Routes>
             <Footer year="2024" />
         </div>
