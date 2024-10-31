@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 
 export function Signup(props) {
 
@@ -97,6 +97,11 @@ export function Signup(props) {
             <div>{error}</div>
           </div>
         </form>
+      </div>
+      <div className="row">
+        <div className="col text-center">
+          <Link classsName="btn btn-link" to="/signin">Have an account? Sign in here. </Link>
+        </div>
       </div>
     </div>
   )
