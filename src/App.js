@@ -47,28 +47,35 @@ const NavData = [
     { name: "About", path: "/about", public: true },
     { name: "Contact", path: "/contact", public: true },
     { name: "Sign Up", path: "/signup", public: true },
-    { name: "Sign in", path: "/signin", public: true },
+]
+
+const NavDataAuth = [
+    { name: "Home", path: "/", public: true },
+    { name: "About", path: "/about", public: true },
+    { name: "Contact", path: "/contact", public: true },
     { name: "Sign out", path: "/signout", public: true }
 ]
 
 function App() {
 
     const [auth, setAuth] = useState()
+    const [nav, setNav] = useState(NavData)
 
     //an observer to determine user's authentication status 
     onAuthStateChanged(FBauth, (user) => {
         if (user) {
             setAuth(user)
+            setNav(NavDataAuth)
         }
         else {
             setAuth(null)
+            setNav(NavData)
         }
     })
 
-
     return (
         <div className="App">
-            <Header title="SAWS" headernav={NavData} />
+            <Header title="SAWS" headernav={ nav } />
             <Routes>
                 <Route path='/' element={<Home />} />
                 <Route path='/about' element={<About />} />
