@@ -15,31 +15,54 @@ import { Signin } from './pages/Signin';
 import { initializeApp } from 'firebase/app';
 import { FirebaseConfig } from './config/FirebaseConfig';
 
+//import firebase auth 
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"
+
 //initialize app
-const app = initializeApp(FirebaseConfig)
+const FBapp = initializeApp(FirebaseConfig)
+
+//initialize firebase auth
+const FBauth = getAuth(FBapp)
+
+//function to create user account
+const signup = (email, password) => {
+    return new Promise((resolve, reject) => {
+        createUserWithEmailAndPassword(FBauth, email,password)
+        .then ((userCredential) => resolve(userCredential))
+        .catch((error) => reject(error))
+    })
+
+    // createUserWithEmailAndPassword(FBauth, email, password)
+    //     .then((userCredential) => {
+    //         console.log(userCredential.user)
+    //     })
+    //     .catch((error) => {
+    //         console.log(error)
+    //     })
+}
 
 const NavData = [
-    {name: "Home", path: "/", public: true},
-    {name: "About", path: "/about", public: true},
-    {name: "Contact", path: "/contact", public: true},
-    {name: "Sign Up", path: "/signup", public: true},
-    {name: "Sign in", path: "/signin", public:true}
+    { name: "Home", path: "/", public: true },
+    { name: "About", path: "/about", public: true },
+    { name: "Contact", path: "/contact", public: true },
+    { name: "Sign Up", path: "/signup", public: true },
+    { name: "Sign in", path: "/signin", public: true }
 ]
 
 function App() {
-  return (
-    <div className="App">
-        <Header title = "SAWS" headernav={NavData}/>
-        <Routes>
-            <Route path='/' element =  {<Home/>}  />
-            <Route path='/about' element =  {<About/>}  />
-            <Route path='/contact' element = {<Contact/>} />
-            <Route path='/signup' element = {<Signup/>} />
-            <Route path='/signin' element = {<Signin/>} />
-        </Routes>
-        <Footer year = "2024"/>
-    </div>
-  );
+    return (
+        <div className="App">
+            <Header title="SAWS" headernav={NavData} />
+            <Routes>
+                <Route path='/' element={<Home />} />
+                <Route path='/about' element={<About />} />
+                <Route path='/contact' element={<Contact />} />
+                <Route path='/signup' element={<Signup handler={signup} />} />
+                
+            </Routes>
+            <Footer year="2024" />
+        </div>
+    );
 }
 
 export default App;
